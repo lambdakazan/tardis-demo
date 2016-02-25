@@ -17,9 +17,20 @@ ex2 = do
   sendPast $ 1:fibs
   return fibs
 
+ex3 :: [Double] -> Tardis Double (Double,Int) [Double]
+ex3 [] = return []
+ex3 (x:xs) = do
+  avg <- getFuture
+  modifyForwards $ \(s, n) -> (s+x, n+1)
+  rest <- ex3 xs
+  (s,n) <- getPast
+  sendPast $ s/fromIntegral n
+  return $ x/avg : rest
+
 main :: IO ()
 main = do
   putStrLn "hello world"
   print $ runTardis ex1 (1,2.0)
   print $ take 10 $ evalTardis ex2 ([],())
+  print $ evalTardis (ex3 [1..4]) (0,(0,0))
 
