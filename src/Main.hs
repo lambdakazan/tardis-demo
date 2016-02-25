@@ -61,6 +61,19 @@ interp0 (Mul f g) = do
   return $ x*y
 interp0 (Const x) = return x
 
+interp1 :: Term -> Tardis () Int Value
+interp1 (Add f g) = do
+  x <- interp1 f
+  y <- interp1 g
+  modifyForwards (+1)
+  return $ x+y
+interp1 (Mul f g) = do
+  x <- interp1 f
+  y <- interp1 g
+  modifyForwards (+1)
+  return $ x*y
+interp1 (Const x) = return x
+
 main :: IO ()
 main = do
   putStrLn "hello world"
@@ -69,4 +82,5 @@ main = do
   print $ evalTardis (ex3 [1..4]) (0,(0,0))
   let term = Mul (Add (Const 3) (Const 2)) (Const 3)
   print $ runIdentity $ interp0 term
+  print $ runTardis (interp1 term) ((),0)
 
