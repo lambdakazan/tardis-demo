@@ -27,6 +27,22 @@ ex3 (x:xs) = do
   sendPast $ s/fromIntegral n
   return $ x/avg : rest
 
+-- instance MonadFix m => Monad (TardisT bw fw m) where
+--   return x = tardis $ \s -> (x, s)
+--   m >>= f  = TardisT $ \ ~(bw, fw) -> do
+--     rec (x,  ~(bw'', fw' )) <- runTardisT m (bw', fw)
+--         (x', ~(bw' , fw'')) <- runTardisT (f x) (bw, fw')
+--     return (x', (bw'', fw''))
+
+-- -- | Modify the backwards-traveling state
+-- -- as it passes through from future to past.
+-- modifyBackwards :: MonadFix m => (bw -> bw) -> TardisT bw fw m ()
+-- modifyBackwards f = do
+--   rec
+--     sendPast (f x)
+--     x <- getFuture
+--   return ()
+
 main :: IO ()
 main = do
   putStrLn "hello world"
