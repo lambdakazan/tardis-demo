@@ -77,6 +77,20 @@ interp1 (Mul f g) = do
 interp1 (Const x) = return x
 interp1 Count = getPast
 
+interp2 :: Term -> Tardis Int () Value
+interp2 (Add f g) = do
+  x <- interp2 f
+  y <- interp2 g
+  modifyBackwards (+1)
+  return $ x+y
+interp2 (Mul f g) = do
+  x <- interp2 f
+  y <- interp2 g
+  modifyBackwards (+1)
+  return $ x*y
+interp2 (Const x) = return x
+interp2 Count = getFuture
+
 main :: IO ()
 main = do
   putStrLn "hello world"
@@ -86,4 +100,5 @@ main = do
   let term = Mul (Add Count (Const 2)) (Const 3)
   print $ runIdentity $ interp0 term
   print $ runTardis (interp1 term) ((),0)
+  print $ runTardis (interp2 term) (0,())
 
