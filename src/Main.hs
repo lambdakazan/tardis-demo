@@ -50,10 +50,23 @@ data Term = Add Term Term
           deriving (Eq,Show)
 type Value = Int
 
+interp0 :: Term -> Identity Value
+interp0 (Add f g) = do
+  x <- interp0 f
+  y <- interp0 g
+  return $ x+y
+interp0 (Mul f g) = do
+  x <- interp0 f
+  y <- interp0 g
+  return $ x*y
+interp0 (Const x) = return x
+
 main :: IO ()
 main = do
   putStrLn "hello world"
   print $ runTardis ex1 (1,2.0)
   print $ take 10 $ evalTardis ex2 ([],())
   print $ evalTardis (ex3 [1..4]) (0,(0,0))
+  let term = Mul (Add (Const 3) (Const 2)) (Const 3)
+  print $ runIdentity $ interp0 term
 
