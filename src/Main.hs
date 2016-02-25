@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Monad.Tardis
+import Data.Functor.Identity
 
 ex1 :: Tardis Int Double String
 ex1 = do
@@ -42,6 +43,12 @@ ex3 (x:xs) = do
 --     sendPast (f x)
 --     x <- getFuture
 --   return ()
+
+data Term = Add Term Term
+          | Mul Term Term
+          | Const Int
+          deriving (Eq,Show)
+type Value = Int
 
 main :: IO ()
 main = do
