@@ -47,6 +47,7 @@ ex3 (x:xs) = do
 data Term = Add Term Term
           | Mul Term Term
           | Const Int
+          | Count
           deriving (Eq,Show)
 type Value = Int
 
@@ -60,6 +61,7 @@ interp0 (Mul f g) = do
   y <- interp0 g
   return $ x*y
 interp0 (Const x) = return x
+interp0 Count = return 0
 
 interp1 :: Term -> Tardis () Int Value
 interp1 (Add f g) = do
@@ -73,6 +75,7 @@ interp1 (Mul f g) = do
   modifyForwards (+1)
   return $ x*y
 interp1 (Const x) = return x
+interp1 Count = getPast
 
 main :: IO ()
 main = do
@@ -80,7 +83,7 @@ main = do
   print $ runTardis ex1 (1,2.0)
   print $ take 10 $ evalTardis ex2 ([],())
   print $ evalTardis (ex3 [1..4]) (0,(0,0))
-  let term = Mul (Add (Const 3) (Const 2)) (Const 3)
+  let term = Mul (Add Count (Const 2)) (Const 3)
   print $ runIdentity $ interp0 term
   print $ runTardis (interp1 term) ((),0)
 
